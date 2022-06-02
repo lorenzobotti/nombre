@@ -1,15 +1,15 @@
 package nombre
 
 type Options struct {
-	spaceAfterMinus              bool
-	spaceBetweenOrderOfMagnitude bool
-	shortenOne                   bool
+	SpaceAfterMinus              bool
+	SpaceBetweenOrderOfMagnitude bool
+	ShortenOne                   bool
 }
 
 func DefaultOptions() Options {
 	return Options{
-		spaceAfterMinus:              false,
-		spaceBetweenOrderOfMagnitude: false,
-		shortenOne:                   false,
+		SpaceAfterMinus:              false,
+		SpaceBetweenOrderOfMagnitude: false,
+		ShortenOne:                   false,
 	}
 }

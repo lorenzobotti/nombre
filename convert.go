@@ -29,8 +29,8 @@ func ConvertWithOptions(number int, options Options) string {
 
 	lastWritten := wroteNothing
 	shouldWriteSpace := func() bool {
-		return (lastWritten == wroteNumber && options.spaceBetweenOrderOfMagnitude) ||
-			(lastWritten == wroteMinus && options.spaceAfterMinus)
+		return (lastWritten == wroteNumber && options.SpaceBetweenOrderOfMagnitude) ||
+			(lastWritten == wroteMinus && options.SpaceAfterMinus)
 	}
 
 	if negative {
@@ -39,7 +39,7 @@ func ConvertWithOptions(number int, options Options) string {
 	}
 
 	for order := biggestOrderInThrees; order >= 3; order -= 3 {
-		wroteSomething := formatOrderOfMagnitude(number, order, options.shortenOne, shouldWriteSpace(), &out)
+		wroteSomething := formatOrderOfMagnitude(number, order, options.ShortenOne, shouldWriteSpace(), &out)
 
 		if wroteSomething {
 			lastWritten = wroteNumber

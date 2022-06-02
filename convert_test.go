@@ -63,8 +63,8 @@ func TestConvertWithOptions(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.expected, func(t *testing.T) {
 			options := Options{
-				spaceAfterMinus:              tc.spaceAfterMinus,
-				spaceBetweenOrderOfMagnitude: tc.spaceBetweenOrderOfMagnitude,
+				SpaceAfterMinus:              tc.spaceAfterMinus,
+				SpaceBetweenOrderOfMagnitude: tc.spaceBetweenOrderOfMagnitude,
 			}
 			got := ConvertWithOptions(tc.input, options)
 
