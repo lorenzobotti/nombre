@@ -3,6 +3,10 @@ package nombre
 import "strings"
 
 func Convert(number int) string {
+	return ConvertWithOptions(number, DefaultOptions())
+}
+
+func ConvertWithOptions(number int, options Options) string {
 	if number == 0 {
 		return "zero"
 	}
@@ -20,12 +24,35 @@ func Convert(number int) string {
 	maxOrder := maxOrderOfMagnitude(number)
 	biggestOrderInThrees := maxOrder + (3 - (maxOrder % 3))
 
+	const wroteNothing = 0
+	const wroteMinus = 1
+	const wroteNumber = 2
+
+	lastWritten := wroteNothing
+	shouldWriteSpace := func() bool {
+		return (lastWritten == wroteNumber && options.spaceBetweenOrderOfMagnitude) ||
+			(lastWritten == wroteMinus && options.spaceAfterMinus)
+	}
+
 	if negative {
 		out.WriteString("meno")
+		lastWritten = wroteMinus
 	}
 
 	for order := biggestOrderInThrees; order >= 3; order -= 3 {
-		out.WriteString(formatOrderOfMagnitude(number, order))
+		str := formatOrderOfMagnitude(number, order)
+
+		if str != "" {
+			if shouldWriteSpace() {
+				out.WriteRune(' ')
+			}
+			out.WriteString(str)
+			lastWritten = wroteNumber
+		}
+	}
+
+	if (hundreds != "" || tens != "") && shouldWriteSpace() {
+		out.WriteRune(' ')
 	}
 
 	out.WriteString(hundreds)

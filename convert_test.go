@@ -25,9 +25,48 @@ func TestConvert(t *testing.T) {
 		{400002, "quattrocentomiladue"},
 		{182952, "centoottantaduemilanovecentocinquantadue"},
 	}
+
 	for _, tc := range testCases {
 		t.Run(tc.expected, func(t *testing.T) {
 			got := Convert(tc.input)
+
+			if got != tc.expected {
+				t.Fatalf("expected '%s', got '%s'", tc.expected, got)
+			}
+		})
+	}
+}
+
+func TestConvertWithOptions(t *testing.T) {
+	testCases := []struct {
+		input                        int
+		spaceAfterMinus              bool
+		spaceBetweenOrderOfMagnitude bool
+		expected                     string
+	}{
+		{0, true, true, "zero"},
+		{1, true, true, "uno"},
+		{-1, true, true, "meno uno"},
+		{30, true, true, "trenta"},
+		{42, true, true, "quarantadue"},
+		{51, true, true, "cinquantuno"},
+		{18, true, true, "diciotto"},
+		{101, true, true, "centouno"},
+		{-151, true, true, "meno centocinquantuno"},
+		{1452, true, true, "mille quattrocentocinquantadue"},
+		{1984, true, true, "mille novecentoottantaquattro"},
+		{-2002, true, true, "meno duemila due"},
+		{400002, true, true, "quattrocentomila due"},
+		{182952, true, true, "centoottantaduemila novecentocinquantadue"},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.expected, func(t *testing.T) {
+			options := Options{
+				spaceAfterMinus:              tc.spaceAfterMinus,
+				spaceBetweenOrderOfMagnitude: tc.spaceBetweenOrderOfMagnitude,
+			}
+			got := ConvertWithOptions(tc.input, options)
 
 			if got != tc.expected {
 				t.Fatalf("expected '%s', got '%s'", tc.expected, got)
