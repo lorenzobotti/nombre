@@ -1,0 +1,7 @@
+*.exe
+*.com
+.DS_STORE
+
+testdata
+coverage/*
+nombre
