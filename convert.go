@@ -39,7 +39,7 @@ func ConvertWithOptions(number int, options Options) string {
 	}
 
 	for order := biggestOrderInThrees; order >= 3; order -= 3 {
-		wroteSomething := formatOrderOfMagnitude(number, order, options.ShortenOne, shouldWriteSpace(), &out)
+		wroteSomething := formatOrderOfMagnitude(number, order, options.ShortenOne, shouldWriteSpace(), options.SpaceBetweenOrderOfMagnitude, &out)
 
 		if wroteSomething {
 			lastWritten = wroteNumber
@@ -100,7 +100,7 @@ func formatFirstThree(ts int, shortenOne, shouldStartWithSpace bool, builder *st
 	return lengthBefore != builder.Len()
 }
 
-func formatOrderOfMagnitude(number, order int, shortenOne, shouldStartWithSpace bool, builder *strings.Builder) (wroteSomething bool) {
+func formatOrderOfMagnitude(number, order int, shortenOne, shouldStartWithSpace, spaceBetween bool, builder *strings.Builder) (wroteSomething bool) {
 	lengthBefore := builder.Len()
 	didIWriteSomething := func() bool { return lengthBefore != builder.Len() }
 
@@ -120,6 +120,9 @@ func formatOrderOfMagnitude(number, order int, shortenOne, shouldStartWithSpace 
 		builder.WriteString(singular)
 	} else if digits != 0 {
 		formatFirstThree(digits, shortenOne, shouldStartWithSpace, builder)
+		if spaceBetween && order != 3 {
+			builder.WriteRune(' ')
+		}
 		builder.WriteString(plural)
 	}
 
