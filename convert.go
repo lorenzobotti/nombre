@@ -1,6 +1,8 @@
 package nombre
 
-import "strings"
+import (
+	"strings"
+)
 
 func Convert(number int) string {
 	return ConvertWithOptions(number, DefaultOptions())
@@ -16,9 +18,6 @@ func ConvertWithOptions(number int, options Options) string {
 		negative = true
 		number *= -1
 	}
-
-	hundreds := formatHundreds(getDigit(number, 3))
-	tens := formatTens(number % 100)
 
 	out := strings.Builder{}
 	maxOrder := maxOrderOfMagnitude(number)
@@ -40,74 +39,89 @@ func ConvertWithOptions(number int, options Options) string {
 	}
 
 	for order := biggestOrderInThrees; order >= 3; order -= 3 {
-		str := formatOrderOfMagnitude(number, order)
+		wroteSomething := formatOrderOfMagnitude(number, order, options.shortenOne, shouldWriteSpace(), &out)
 
-		if str != "" {
-			if shouldWriteSpace() {
-				out.WriteRune(' ')
-			}
-			out.WriteString(str)
+		if wroteSomething {
 			lastWritten = wroteNumber
 		}
 	}
 
-	if (hundreds != "" || tens != "") && shouldWriteSpace() {
-		out.WriteRune(' ')
-	}
-
-	out.WriteString(hundreds)
-	out.WriteString(tens)
+	formatFirstThree(number%1000, false, shouldWriteSpace(), &out)
 
 	return out.String()
 }
 
-func formatTens(ts int) string {
+func formatFirstThree(ts int, shortenOne, shouldStartWithSpace bool, builder *strings.Builder) (wroteSomething bool) {
+	haveWrittenSpace := false
+	writeString := func(strs ...string) {
+		if shouldStartWithSpace && !haveWrittenSpace {
+			builder.WriteRune(' ')
+			haveWrittenSpace = true
+		}
+
+		for _, s := range strs {
+			builder.WriteString(s)
+		}
+	}
+
+	lengthBefore := builder.Len()
+
+	h := getDigit(ts, 3)
 	t := getDigit(ts, 2)
 	o := getDigit(ts, 1)
 
+	if h == 1 {
+		writeString("cento")
+	} else if h != 0 {
+		writeString(digits[h], "cento")
+	}
+
 	if t == 1 {
-		return teens[o]
+		writeString(teens[o])
 	} else {
 		tensStr := tens[t]
 		onesStr := digits[o]
 
+		// shorten the last letter of the tens if the unit starts with a vowel
+		// example: "quarantauno" -> "quarantuno"
 		if contains(vowels[:], firstLetter(onesStr)) {
 			if len(tensStr) > 0 {
 				tensStr = tensStr[:len(tensStr)-1]
 			}
 		}
 
-		return tensStr + onesStr
+		if o == 1 && shortenOne {
+			writeString(tensStr, "un")
+		} else {
+			writeString(tensStr, onesStr)
+		}
 	}
+
+	return lengthBefore != builder.Len()
 }
 
-func formatHundreds(digit int) string {
-	if digit == 0 {
-		return ""
-	}
+func formatOrderOfMagnitude(number, order int, shortenOne, shouldStartWithSpace bool, builder *strings.Builder) (wroteSomething bool) {
+	lengthBefore := builder.Len()
+	didIWriteSomething := func() bool { return lengthBefore != builder.Len() }
 
-	if digit == 1 {
-		return "cento"
-	}
-
-	return digits[digit] + "cento"
-}
-
-func formatOrderOfMagnitude(number, order int) string {
 	terms, areThereTerms := ordersOfMagnitude[order]
 	if !areThereTerms {
-		return ""
+		return didIWriteSomething()
 	}
+
 	singular := terms[0]
 	plural := terms[1]
 
 	digits := getOrderOfMagnitude(number, order)
-	if digits == 0 {
-		return ""
-	}
 	if digits == 1 {
-		return singular
+		if shouldStartWithSpace {
+			builder.WriteRune(' ')
+		}
+		builder.WriteString(singular)
+	} else if digits != 0 {
+		formatFirstThree(digits, shortenOne, shouldStartWithSpace, builder)
+		builder.WriteString(plural)
 	}
 
-	return Convert(digits) + plural
+	return didIWriteSomething()
 }
