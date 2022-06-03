@@ -100,7 +100,7 @@ func formatFirstThree(ts int, shortenOne, shouldStartWithSpace bool, builder *st
 	return lengthBefore != builder.Len()
 }
 
-func formatOrderOfMagnitude(number, order int, shortenOne, shouldStartWithSpace, spaceBetween bool, builder *strings.Builder) (wroteSomething bool) {
+func formatOrderOfMagnitude(number, order int, shortenOne, startWithSpace, spaceBetween bool, builder *strings.Builder) (wroteSomething bool) {
 	lengthBefore := builder.Len()
 	didIWriteSomething := func() bool { return lengthBefore != builder.Len() }
 
@@ -114,12 +114,12 @@ func formatOrderOfMagnitude(number, order int, shortenOne, shouldStartWithSpace,
 
 	digits := getOrderOfMagnitude(number, order)
 	if digits == 1 {
-		if shouldStartWithSpace {
+		if startWithSpace {
 			builder.WriteRune(' ')
 		}
 		builder.WriteString(singular)
 	} else if digits != 0 {
-		formatFirstThree(digits, shortenOne, shouldStartWithSpace, builder)
+		formatFirstThree(digits, shortenOne, startWithSpace, builder)
 		if spaceBetween && order != 3 {
 			builder.WriteRune(' ')
 		}
