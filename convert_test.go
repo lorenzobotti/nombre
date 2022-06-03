@@ -19,7 +19,7 @@ func TestConvert(t *testing.T) {
 		{18, "diciotto"},
 		{101, "centouno"},
 		{151, "centocinquantuno"},
-		{1452, "millequattrocentocinquantadue"},
+		{1453, "millequattrocentocinquantatre"},
 		{1984, "millenovecentoottantaquattro"},
 		{2002, "duemiladue"},
 		{400002, "quattrocentomiladue"},
@@ -42,22 +42,24 @@ func TestConvertWithOptions(t *testing.T) {
 		input                        int
 		spaceAfterMinus              bool
 		spaceBetweenOrderOfMagnitude bool
+		accentThree                  bool
 		expected                     string
 	}{
-		{0, true, true, "zero"},
-		{1, true, true, "uno"},
-		{-1, true, true, "meno uno"},
-		{30, true, true, "trenta"},
-		{42, true, true, "quarantadue"},
-		{51, true, true, "cinquantuno"},
-		{18, true, true, "diciotto"},
-		{101, true, true, "centouno"},
-		{-151, true, true, "meno centocinquantuno"},
-		{1452, true, true, "mille quattrocentocinquantadue"},
-		{1984, true, true, "mille novecentoottantaquattro"},
-		{-2002, true, true, "meno duemila due"},
-		{400002, true, true, "quattrocentomila due"},
-		{182952, true, true, "centoottantaduemila novecentocinquantadue"},
+		{0, true, true, true, "zero"},
+		{1, true, true, true, "uno"},
+		{3, true, true, true, "tre"},
+		{-1, true, true, true, "meno uno"},
+		{30, true, true, true, "trenta"},
+		{42, true, true, true, "quarantadue"},
+		{51, true, true, true, "cinquantuno"},
+		{18, true, true, true, "diciotto"},
+		{101, true, true, true, "centouno"},
+		{-151, true, true, true, "meno centocinquantuno"},
+		{1453, true, true, true, "mille quattrocentocinquantatrè"},
+		{1984, true, true, true, "mille novecentoottantaquattro"},
+		{-2002, true, true, true, "meno duemila due"},
+		{400002, true, true, true, "quattrocentomila due"},
+		{182952, true, true, true, "centoottantaduemila novecentocinquantadue"},
 	}
 
 	for _, tc := range testCases {
@@ -65,6 +67,7 @@ func TestConvertWithOptions(t *testing.T) {
 			options := Options{
 				SpaceAfterMinus:              tc.spaceAfterMinus,
 				SpaceBetweenOrderOfMagnitude: tc.spaceBetweenOrderOfMagnitude,
+				AccentThree:                  tc.accentThree,
 			}
 			got := ConvertWithOptions(tc.input, options)
 

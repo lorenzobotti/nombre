@@ -41,20 +41,21 @@ func ConvertWithOptions(number int, options Options) string {
 	}
 
 	for order := biggestOrderInThrees; order >= 3; order -= 3 {
-		wroteSomething := formatOrderOfMagnitude(number, order, options.ShortenOne, shouldWriteSpace(), options.SpaceBetweenOrderOfMagnitude, &out)
+		wroteSomething := formatOrderOfMagnitude(number, order, options.ShortenOne, shouldWriteSpace(), options.SpaceBetweenOrderOfMagnitude, options.AccentThree, &out)
 
 		if wroteSomething {
 			lastWritten = wroteNumber
 		}
 	}
 
-	formatFirstThree(number%1000, false, shouldWriteSpace(), &out)
+	accentThree := (lastWritten == wroteNumber) && options.AccentThree
+	formatFirstThree(number%1000, false, shouldWriteSpace(), accentThree, &out)
 
 	return out.String()
 }
 
 // formatFirstThree formats numbers lesser than one thousand.
-func formatFirstThree(ts int, shortenOne, shouldStartWithSpace bool, builder *strings.Builder) (wroteSomething bool) {
+func formatFirstThree(ts int, shortenOne, shouldStartWithSpace, accentThree bool, builder *strings.Builder) (wroteSomething bool) {
 	haveWrittenSpace := false
 	writeString := func(strs ...string) {
 		if shouldStartWithSpace && !haveWrittenSpace {
@@ -85,6 +86,10 @@ func formatFirstThree(ts int, shortenOne, shouldStartWithSpace bool, builder *st
 		tensStr := tens[t]
 		onesStr := digits[o]
 
+		if t != 0 && h != 0 && o == 3 && accentThree {
+			onesStr = "trè"
+		}
+
 		// shorten the last letter of the tens if the unit starts with a vowel
 		// example: "quarantauno" -> "quarantuno"
 		if contains(vowels[:], firstLetter(onesStr)) {
@@ -106,7 +111,7 @@ func formatFirstThree(ts int, shortenOne, shouldStartWithSpace bool, builder *st
 // formatOrderOfMagnitude picks an order of magnitude from a number and formats only that,
 // together with the name of the order of magnitude. The names are described by the global
 // variable `ordersOfMagnitude`
-func formatOrderOfMagnitude(number, order int, shortenOne, startWithSpace, spaceBetween bool, builder *strings.Builder) (wroteSomething bool) {
+func formatOrderOfMagnitude(number, order int, shortenOne, startWithSpace, spaceBetween, accentThree bool, builder *strings.Builder) (wroteSomething bool) {
 	lengthBefore := builder.Len()
 	didIWriteSomething := func() bool { return lengthBefore != builder.Len() }
 
@@ -125,7 +130,9 @@ func formatOrderOfMagnitude(number, order int, shortenOne, startWithSpace, space
 		}
 		builder.WriteString(singular)
 	} else if digits != 0 {
-		formatFirstThree(digits, shortenOne, startWithSpace, builder)
+		accentThree = accentThree && spaceBetween
+
+		formatFirstThree(digits, shortenOne, startWithSpace, accentThree, builder)
 		if spaceBetween && order != 3 {
 			builder.WriteRune(' ')
 		}

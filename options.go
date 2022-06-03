@@ -10,6 +10,10 @@ type Options struct {
 	// of magnitude.
 	// Example: "centoventunmila quattrocentosettantadue"
 	ShortenOne bool
+	// Put an accent on "tre", but not when it's on
+	// its own (including when orders of magnitude are
+	// spaced out)
+	AccentThree bool
 }
 
 func DefaultOptions() Options {
@@ -17,5 +21,6 @@ func DefaultOptions() Options {
 		SpaceAfterMinus:              false,
 		SpaceBetweenOrderOfMagnitude: false,
 		ShortenOne:                   false,
+		AccentThree:                  false,
 	}
 }
