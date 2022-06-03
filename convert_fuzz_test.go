@@ -1,7 +1,7 @@
 package nombre
 
 import (
-	"strings"
+	"math/rand"
 	"testing"
 )
 
@@ -16,10 +16,23 @@ func FuzzConvert(f *testing.F) {
 	f.Add(70000000)
 	f.Add(50000000)
 
-	f.Fuzz(func(t *testing.T, a int) {
-		got := Convert(a)
-		if strings.Contains(got, " ") {
+	f.Fuzz(func(t *testing.T, num int) {
+		got := ConvertWithOptions(num, randomOptions())
+		if len(got) == 0 {
 			t.Fail()
 		}
 	})
+}
+
+func randomBool() bool {
+	return rand.Intn(2) == 1
+}
+
+func randomOptions() Options {
+	return Options{
+		randomBool(),
+		randomBool(),
+		randomBool(),
+		randomBool(),
+	}
 }
