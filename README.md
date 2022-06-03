@@ -11,9 +11,17 @@ millenovecentoottantaquattro
 ottomilioninovecentoventimilanovecentoquarantadue
 ```
 
-## buildare come eseguibile
+## utilizzo come eseguibile
+### build
 ```
 $ go build -o nombre ./cmd
+```
+### utilizzo
+```
+  -spazi
+        spazi tra gli ordini di grandezza (esempio: "trentamila duecento quarantre")
+  -un
+        accorcia l'uno (esempio: "ventunmila")
 ```
 
 ## utilizzo come libreria
@@ -28,4 +36,4 @@ la libreria esporta le funzioni:
  - `func DefaultOptions() Options`
 
 ## note di utilizzo
-nombre segue le [regole dell'Academia della Crusca](https://accademiadellacrusca.it/it/consulenza/quarantaquattro-gatti-in-fila-per-sei-col-resto-di-due-o-di-quando-e-come-scrivere-i-numeri-in-lettere/1077) per la scrittura dei numeri in lettere. Regole stilistiche, come _ventunmila_ al posto di _ventunomila_ sono WIP.
+nombre segue le [regole dell'Academia della Crusca](https://accademiadellacrusca.it/it/consulenza/quarantaquattro-gatti-in-fila-per-sei-col-resto-di-due-o-di-quando-e-come-scrivere-i-numeri-in-lettere/1077) per la scrittura dei numeri in lettere.
