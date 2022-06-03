@@ -4,10 +4,12 @@ import (
 	"strings"
 )
 
+// Convert turns a number into a string using the default options
 func Convert(number int) string {
 	return ConvertWithOptions(number, DefaultOptions())
 }
 
+// ConvertWithOptions turns a number into a string using the provided options
 func ConvertWithOptions(number int, options Options) string {
 	if number == 0 {
 		return "zero"
@@ -51,6 +53,7 @@ func ConvertWithOptions(number int, options Options) string {
 	return out.String()
 }
 
+// formatFirstThree formats numbers lesser than one thousand.
 func formatFirstThree(ts int, shortenOne, shouldStartWithSpace bool, builder *strings.Builder) (wroteSomething bool) {
 	haveWrittenSpace := false
 	writeString := func(strs ...string) {
@@ -100,6 +103,9 @@ func formatFirstThree(ts int, shortenOne, shouldStartWithSpace bool, builder *st
 	return lengthBefore != builder.Len()
 }
 
+// formatOrderOfMagnitude picks an order of magnitude from a number and formats only that,
+// together with the name of the order of magnitude. The names are described by the global
+// variable `ordersOfMagnitude`
 func formatOrderOfMagnitude(number, order int, shortenOne, startWithSpace, spaceBetween bool, builder *strings.Builder) (wroteSomething bool) {
 	lengthBefore := builder.Len()
 	didIWriteSomething := func() bool { return lengthBefore != builder.Len() }
